@@ -1,7 +1,7 @@
 # Spiral Finger Kinematics
 
 Code accompanying the paper *Modelling equiangular spiral arc kinematics of the human finger: exact conditions, viable parameter regions, and the role of phalangeal proportions* (Mathematical Medicine and Biology, submitted).
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20127759.svg)](https://doi.org/10.5281/zenodo.20127759)
 ## Overview
 
 This repository contains the Python code that produces every computational figure in the paper. The model is a planar three-link kinematic chain with linear joint coupling — a standard abstraction of the tendon-driven human finger:
@@ -96,7 +96,7 @@ A working installation should reproduce these to four decimal places. `sanity_ch
 
 ## Citation
 
-If you use this code, please cite the paper.
+If you use this code, please cite the paper. The archived version of this repository is available on Zenodo at https://doi.org/10.5281/zenodo.20127759.
 
 ## License
 
