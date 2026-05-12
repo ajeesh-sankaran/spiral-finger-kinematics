@@ -21,15 +21,17 @@ spiral-finger-kinematics/
 ├── src/
 │   ├── kinematics.py        # core model: trajectory, pole fit, spiral fidelity
 │   └── grids.py             # batched grid computation utilities
-├── scripts/
-│   ├── make_figure_1.py     # three representative spiral arcs
-│   ├── make_figure_2.py     # F over coupling space, V(0.999) contour
-│   ├── make_figure_3.py     # F over length-ratio space
-│   └── make_figure_4.py     # threshold-robustness analysis
+├── ├── scripts/
+│   ├── make_figure_1.py                 # three representative spiral arcs
+│   ├── make_figure_2.py                 # F over coupling space, V(0.999) contour
+│   ├── make_figure_3.py                 # F over length-ratio space
+│   ├── make_figure_4.py                 # threshold-robustness analysis
+│   └── run_boundary_length_sweeps.py    # length-ratio sweeps at boundary coupling points
 ├── data/
-│   ├── F80_coupling.npz     # precomputed F over (k1, k2), 80x80 grid
-│   └── F60_lengths.npz      # precomputed F over (Lp/Lm, Lm/Ld), 60x60 grid
-└── figures/                 # generated PNGs (created on first run)
+│   ├── F80_coupling.npz                       # F over (k1, k2), 80x80 grid
+│   ├── F60_lengths.npz                        # F over length ratios at anatomical coupling
+│   ├── F60_boundary_k1_1p25_k2_0p67.npz       # length-ratio sweep near k1 boundary
+│   └── F60_boundary_k1_1p00_k2_1p00.npz       # length-ratio sweep near k2 boundary
 ```
 
 ## Requirements
@@ -94,6 +96,20 @@ At the anatomical operating point (k₁ = 1, k₂ = 0.67) with 2:1:1 phalangeal 
 
 A working installation should reproduce these to four decimal places. `sanity_check()` in `src/kinematics.py` confirms this automatically.
 
+## Supplementary boundary length-ratio sweeps
+
+§4.4) establishes length-ratio insensitivity. This claim is supported by length-ratio sweeps at two additional coupling points:
+
+- **(k₁ = 1.25, k₂ = 0.67)** — near the upper k₁ boundary at anatomical k₂. F ≥ 0.999 across 98.8% of the length-ratio space; minimum F = 0.9989 in the corner Lp/Lm > 3.2, Lm/Ld < 0.6.
+- **(k₁ = 1.00, k₂ = 1.00)** — near the upper k₂ boundary at anatomical k₁. F ≥ 0.999 across the entire length-ratio space; minimum F = 0.9991.
+
+The corresponding .npz files are in `data/`. To regenerate them from scratch (≈ 40 min total on a single core), run:
+
+​```bash
+python scripts/run_boundary_length_sweeps.py
+​```
+
+The script will skip any file that already exists, so it can be run safely against an already-populated `data/` directory.
 ## Citation
 
 If you use this code, please cite the paper. The archived version of this repository is available on Zenodo at https://doi.org/10.5281/zenodo.20127759.
