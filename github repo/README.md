@@ -116,4 +116,4 @@ If you use this code, please cite the paper. The archived version of this reposi
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Released under the MIT License. See the `LICENSE` file for full text.
