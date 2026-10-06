@@ -191,6 +191,15 @@ def panel_b(ax):
                 alpha=1.0 if show_polar else 0.65, zorder=3)
         ax.plot(*Q, 'o', mfc=C_SPIRAL, mec='black', ms=7, mew=1.0, zorder=7)
 
+        # arrowhead on the radial line pointing Q -> P, so that the reference
+        # direction against which alpha is measured is unambiguous
+        u = (P - Q) / np.linalg.norm(P - Q)
+        ax.add_patch(FancyArrowPatch(Q + 0.18 * u, Q + 0.40 * u,
+                                     arrowstyle='-|>', mutation_scale=11,
+                                     color=C_SPIRAL, lw=1.6,
+                                     alpha=1.0 if show_polar else 0.65,
+                                     zorder=6))
+
         # tangent, drawn as an arrow in the direction of increasing theta_p
         ax.add_patch(FancyArrowPatch(Q - 0.17 * t, Q + 0.26 * t,
                                      arrowstyle='-|>', mutation_scale=13,
@@ -222,10 +231,11 @@ def panel_b(ax):
 
     ax.text(0.5, 0.02,
             'Equiangular spiral:  $r = a\\,e^{\\mu\\psi}$,  '
-            '$\\mu = \\cot\\alpha$\n'
+            '$|\\mu| = \\cot\\alpha$\n'
+            '$\\alpha$: angle from the tangent to the ray towards $P$\n'
             '$\\alpha$ constant along the curve  $\\Leftrightarrow$  '
             'exact spiral',
-            transform=ax.transAxes, ha='center', va='bottom', fontsize=9,
+            transform=ax.transAxes, ha='center', va='bottom', fontsize=8.6,
             bbox=dict(boxstyle='round,pad=0.45', facecolor='white',
                       edgecolor='#cccccc'))
 

@@ -13,7 +13,10 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.kinematics import spiral_fidelity  # noqa: E402
+from src.kinematics import (  # noqa: E402
+    spiral_fidelity, trajectory, fit_at_pole,
+    LP_DEFAULT, LM_DEFAULT, LD_DEFAULT,
+)
 
 DATA = Path(__file__).resolve().parents[1] / "data"
 PHI = (1 + 5 ** 0.5) / 2
@@ -169,6 +172,41 @@ def main():
         ang = np.degrees(np.arccos(np.clip(np.dot(inward, tv), -1, 1)))
         chk(f"Fig1B alpha arc at {int(frac * 100)}% along (deg)", claim, ang,
             tol=0.1, fmt="{:.2f}")
+
+    # ---- Section 4.2: sign of mu over the coupling grid -------------------
+    # Recompute mu at every archived pole; the viable region must be entirely
+    # inward-winding (mu < 0), with positive mu confined to the corner where
+    # the spiral description has already failed.
+    mu_grid = np.zeros_like(Fc)
+    for ii in range(Fc.shape[0]):
+        for jj in range(Fc.shape[1]):
+            xg, yg = trajectory(k1v[jj], k2v[ii], LP_DEFAULT, LM_DEFAULT,
+                                LD_DEFAULT)
+            _, mg, _ = fit_at_pole(d["pole_x"][ii, jj], d["pole_y"][ii, jj],
+                                   xg, yg)
+            mu_grid[ii, jj] = mg
+    viable = Fc >= 0.999
+    pos = mu_grid > 0
+    chk("cells with mu > 0 inside V(0.999)", 0, int((pos & viable).sum()),
+        tol=0, fmt="{:d}")
+    chk("min mu over V(0.999)", -0.458, mu_grid[viable].min(), tol=0.001,
+        fmt="{:.3f}")
+    chk("max mu over V(0.999)", -0.036, mu_grid[viable].max(), tol=0.001,
+        fmt="{:.3f}")
+    chk("number of mu > 0 cells in the 80x80 box", 10, int(pos.sum()),
+        tol=0, fmt="{:d}")
+    if pos.any():
+        pi_, pj_ = np.where(pos)
+        chk("lowest k1 with mu > 0", 1.46, k1v[pj_].min(), tol=0.01,
+            fmt="{:.2f}")
+        chk("lowest k2 with mu > 0", 1.17, k2v[pi_].min(), tol=0.01,
+            fmt="{:.2f}")
+        chk("max F among mu > 0 cells", 0.906, Fc[pos].max(), tol=0.001,
+            fmt="{:.3f}")
+    a_lo = np.degrees(np.arctan(1.0 / np.abs(mu_grid[viable]).max()))
+    a_hi = np.degrees(np.arctan(1.0 / np.abs(mu_grid[viable]).min()))
+    chk("min alpha over V(0.999) (deg)", 65.0, a_lo, tol=0.5, fmt="{:.1f}")
+    chk("max alpha over V(0.999) (deg)", 88.0, a_hi, tol=0.5, fmt="{:.1f}")
 
     # ---- Section 4.2: decline beyond the k1 boundary ---------------------
     for k2, claim in [(0.67, 0.9988), (1.00, 0.992), (1.20, 0.905)]:
