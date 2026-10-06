@@ -85,7 +85,7 @@ Figures are written to `figures/` in both PDF and PNG. Figures 3 and 4 read the 
 
 ## Verifying the paper's numbers
 
-Every numerical claim in the paper — the anatomical checkpoint, the viable-region area, the boundary positions in k₁, the length-ratio range, the boundary and wide sweeps, and the closure bounds — can be recomputed from the archived grids:
+Every numerical claim in the paper — the anatomical checkpoint, the viable-region area, the boundary positions in k₁, the length-ratio range, the boundary and wide sweeps, the closure bounds, the sign and range of the spiral cotangent μ over the viable region, and the Appendix A identities — can be recomputed from the archived grids:
 
 ```bash
 PYTHONPATH=. python scripts/verify_numbers.py
